@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 class GithubBranchMapper {
     
-    GithubBranch mapBranchReceivedDtoToGithubBranch(BranchReceivedDto receivedDto) {
+    static GithubBranch mapBranchReceivedDtoToGithubBranch(BranchReceivedDto receivedDto) {
         return null;
     }
     
-    BranchResponseDto mapGithubBranchToBranchResponseDto(GithubBranch githubBranch) {
+    static BranchResponseDto mapGithubBranchToBranchResponseDto(GithubBranch githubBranch) {
         return null;
     }
 }
