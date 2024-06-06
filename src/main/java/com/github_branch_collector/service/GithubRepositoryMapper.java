@@ -12,14 +12,12 @@ class GithubRepositoryMapper {
     
     static List<GithubRepository> mapRepositoryReceivedDtoArrayToNotForkedGithubRepositoryList(RepositoryReceivedDto[] array) {
         List<GithubRepository> repositories = mapRepositoryReceivedDtoArrayToGithubRepositoryList(array);
-        return repositories.stream()
-                           .filter(repo -> !repo.getFork())
-                           .toList();
+        return filterNotForkedRepositoriesOnly(repositories);
     }
     
-    static List<RepositoryResponseDto> mapGithubRepositoryListToRepositoryResponseDtoList(List<GithubRepository> repositories) {
+    private static List<GithubRepository> filterNotForkedRepositoriesOnly(List<GithubRepository> repositories) {
         return repositories.stream()
-                           .map(GithubRepositoryMapper::mapGithubRepositoryToRepositoryResponseDto)
+                           .filter(repo -> !repo.getFork())
                            .toList();
     }
     
@@ -29,15 +27,22 @@ class GithubRepositoryMapper {
                      .toList();
     }
     
+    static List<RepositoryResponseDto> mapGithubRepositoryListToRepositoryResponseDtoList(List<GithubRepository> repositories) {
+        return repositories.stream()
+                           .map(GithubRepositoryMapper::mapGithubRepositoryToRepositoryResponseDto)
+                           .toList();
+    }
+    
     private static RepositoryResponseDto mapGithubRepositoryToRepositoryResponseDto(GithubRepository repository) {
         return new RepositoryResponseDto(repository.getName(),
                                          GithubOwnerMapper.mapOwnerToOwnerName(repository.getOwner()),
-                                         Collections.emptyList());
+                                         GithubBranchMapper.mapGithubBranchListToBranchResponseDtoList(repository.getBranches()));
     }
     
     private static GithubRepository mapRepositoryReceivedDtoToGithubRepository(RepositoryReceivedDto dto) {
         return new GithubRepository(dto.name(),
                                     GithubOwnerMapper.mapOwnerReceivedDtoToOwner(dto.owner()),
-                                    dto.fork());
+                                    dto.fork(),
+                                    Collections.emptyList());
     }
 }

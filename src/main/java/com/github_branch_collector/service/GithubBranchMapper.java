@@ -11,14 +11,13 @@ import java.util.List;
 @Component
 class GithubBranchMapper {
     
-    static List<BranchResponseDto> mapBranchReceivedDtoArrayToBranchResponseDtoList(BranchReceivedDto[] array) {
-        List<GithubBranch> githubBranches = mapBranchReceivedDtoArrayToGithubBranchList(array);
-        return githubBranches.stream()
-                             .map(GithubBranchMapper::mapGithubBranchToBranchResponseDto)
-                             .toList();
+    static List<BranchResponseDto> mapGithubBranchListToBranchResponseDtoList(List<GithubBranch> list) {
+        return list.stream()
+                   .map(GithubBranchMapper::mapGithubBranchToBranchResponseDto)
+                   .toList();
     }
     
-    private static List<GithubBranch> mapBranchReceivedDtoArrayToGithubBranchList(BranchReceivedDto[] array) {
+    static List<GithubBranch> mapBranchReceivedDtoArrayToGithubBranchList(BranchReceivedDto[] array) {
         return Arrays.stream(array)
                      .map(GithubBranchMapper::mapBranchReceivedDtoToGithubBranch)
                      .toList();

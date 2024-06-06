@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 class GithubCommitMapper {
-
+    
     static GithubCommit mapCommitReceivedDtoToGithubCommit(CommitReceivedDto commit) {
         return new GithubCommit(commit.sha());
     }

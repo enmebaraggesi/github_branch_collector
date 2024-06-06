@@ -4,8 +4,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GithubOwner {
     
-    private final String login;
+    private String login;
 }

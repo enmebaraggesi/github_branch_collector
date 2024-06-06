@@ -4,8 +4,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GithubCommit {
     
-    private final String sha;
+    private String sha;
 }

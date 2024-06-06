@@ -4,9 +4,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GithubBranch {
     
-    private final String name;
-    private final GithubCommit commit;
+    private String name;
+    private GithubCommit commit;
 }

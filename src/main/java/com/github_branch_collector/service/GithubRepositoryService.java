@@ -1,9 +1,9 @@
 package com.github_branch_collector.service;
 
+import com.github_branch_collector.domain.GithubBranch;
 import com.github_branch_collector.domain.GithubRepository;
 import com.github_branch_collector.received.BranchReceivedDto;
 import com.github_branch_collector.received.RepositoryReceivedDto;
-import com.github_branch_collector.response.BranchResponseDto;
 import com.github_branch_collector.response.RepositoryResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -30,10 +30,11 @@ public class GithubRepositoryService {
                                                          .bodyToMono(RepositoryReceivedDto[].class)
                                                          .block();
         List<GithubRepository> repositories = GithubRepositoryMapper.mapRepositoryReceivedDtoArrayToNotForkedGithubRepositoryList(receivedArray);
-        return GithubRepositoryMapper.mapGithubRepositoryListToRepositoryResponseDtoList(repositories);
+        List<GithubRepository> reposWithBranches = fitFetchedBranchesIntoRepositories(repositories);
+        return GithubRepositoryMapper.mapGithubRepositoryListToRepositoryResponseDtoList(reposWithBranches);
     }
     
-    public List<BranchResponseDto> getAllBranchesForRepository(GithubRepository repository) {
+    private List<GithubBranch> getAllBranchesForRepository(GithubRepository repository) {
         String repo = repository.getName();
         String owner = repository.getOwner().getLogin();
         BranchReceivedDto[] receivedArray = webClient.get()
@@ -42,6 +43,14 @@ public class GithubRepositoryService {
                                                      .retrieve()
                                                      .bodyToMono(BranchReceivedDto[].class)
                                                      .block();
-        return GithubBranchMapper.mapBranchReceivedDtoArrayToBranchResponseDtoList(receivedArray);
+        return GithubBranchMapper.mapBranchReceivedDtoArrayToGithubBranchList(receivedArray);
+    }
+    
+    private List<GithubRepository> fitFetchedBranchesIntoRepositories(List<GithubRepository> repositories) {
+        repositories.forEach(repository -> {
+            List<GithubBranch> branches = getAllBranchesForRepository(repository);
+            repository.setBranches(branches);
+        });
+        return repositories;
     }
 }

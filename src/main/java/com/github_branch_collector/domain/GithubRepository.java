@@ -2,12 +2,15 @@ package com.github_branch_collector.domain;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GithubRepository {
     
-    private final String name;
-    private final GithubOwner owner;
-    private final Boolean fork;
+    private String name;
+    private GithubOwner owner;
+    private Boolean fork;
+    private List<GithubBranch> branches;
 }
