@@ -28,13 +28,4 @@ public class ClientErrorHandler {
         return new AcceptFormatExceptionResponseDto(HttpStatus.NOT_ACCEPTABLE,
                                                     "Your Accept header is invalid. Our client accepts only application/json");
     }
-    
-    @ExceptionHandler(NotAcceptableFormatException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ResponseBody
-    public AcceptFormatExceptionResponseDto handleNotAcceptableFormatException(NotAcceptableFormatException e) {
-        log.error(e);
-        return new AcceptFormatExceptionResponseDto(HttpStatus.NOT_ACCEPTABLE,
-                                                    "Your Accept header is invalid. Our client accepts only application/json");
-    }
 }

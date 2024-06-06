@@ -2,7 +2,8 @@ package com.github_branch_collector.service;
 
 import com.github_branch_collector.domain.GithubBranch;
 import com.github_branch_collector.domain.GithubRepository;
-import com.github_branch_collector.error.*;
+import com.github_branch_collector.error.UserNotFoundException;
+import com.github_branch_collector.error.XmlFormatException;
 import com.github_branch_collector.received.BranchReceivedDto;
 import com.github_branch_collector.received.RepositoryReceivedDto;
 import com.github_branch_collector.response.RepositoryResponseDto;
@@ -26,13 +27,14 @@ public class GithubRepositoryService {
     
     public List<RepositoryResponseDto> getAllNotForkedReposForUser(String username, String accept) {
         log.info("Fetching not forked repositories for user {}", username);
+        if (accept.equalsIgnoreCase("application/xml")) {
+            throw new XmlFormatException(accept);
+        }
         try {
-            if (accept.equalsIgnoreCase("application/json")) {
-                List<GithubRepository> repos = GithubRepositoryMapper.filterNotForkedRepositoriesOnly(fetchReposForUser(username));
-                return GithubRepositoryMapper.mapGithubRepositoryListToRepositoryResponseDtoList(fitFetchedBranchesIntoRepositories(repos));
-            } else if (accept.equalsIgnoreCase("application/xml")) {
-                throw new XmlFormatException(accept);
-            } else throw new NotAcceptableFormatException(accept);
+            List<GithubRepository> repos = fetchReposForUser(username);
+            List<GithubRepository> filteredRepos = GithubRepositoryMapper.filterNotForkedRepositoriesOnly(repos);
+            List<GithubRepository> combinedReposWithBranches = fitFetchedBranchesIntoRepositories(filteredRepos);
+            return GithubRepositoryMapper.mapGithubRepositoryListToRepositoryResponseDtoList(combinedReposWithBranches);
         } catch (WebClientResponseException e) {
             throw new UserNotFoundException();
         }
