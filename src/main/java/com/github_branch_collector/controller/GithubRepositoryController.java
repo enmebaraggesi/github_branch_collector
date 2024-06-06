@@ -18,7 +18,8 @@ public class GithubRepositoryController {
     }
     
     @GetMapping("/repos/{username}")
-    public List<RepositoryResponseDto> getAllNotForkedReposForUser(@PathVariable String username) {
-        return githubRepositoryService.getAllNotForkedReposForUser(username);
+    public List<RepositoryResponseDto> getAllNotForkedReposForUser(@PathVariable String username,
+                                                                   @RequestHeader String accept) {
+        return githubRepositoryService.getAllNotForkedReposForUser(username, accept);
     }
 }

@@ -10,18 +10,7 @@ import java.util.*;
 @Component
 class GithubRepositoryMapper {
     
-    static List<GithubRepository> mapRepositoryReceivedDtoArrayToNotForkedGithubRepositoryList(RepositoryReceivedDto[] array) {
-        List<GithubRepository> repositories = mapRepositoryReceivedDtoArrayToGithubRepositoryList(array);
-        return filterNotForkedRepositoriesOnly(repositories);
-    }
-    
-    private static List<GithubRepository> filterNotForkedRepositoriesOnly(List<GithubRepository> repositories) {
-        return repositories.stream()
-                           .filter(repo -> !repo.getFork())
-                           .toList();
-    }
-    
-    private static List<GithubRepository> mapRepositoryReceivedDtoArrayToGithubRepositoryList(RepositoryReceivedDto[] array) {
+    static List<GithubRepository> mapRepositoryReceivedDtoArrayToGithubRepositoryList(RepositoryReceivedDto[] array) {
         return Arrays.stream(array)
                      .map(GithubRepositoryMapper::mapRepositoryReceivedDtoToGithubRepository)
                      .toList();
@@ -30,6 +19,12 @@ class GithubRepositoryMapper {
     static List<RepositoryResponseDto> mapGithubRepositoryListToRepositoryResponseDtoList(List<GithubRepository> repositories) {
         return repositories.stream()
                            .map(GithubRepositoryMapper::mapGithubRepositoryToRepositoryResponseDto)
+                           .toList();
+    }
+    
+    static List<GithubRepository> filterNotForkedRepositoriesOnly(List<GithubRepository> repositories) {
+        return repositories.stream()
+                           .filter(repo -> !repo.getFork())
                            .toList();
     }
     
