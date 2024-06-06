@@ -10,27 +10,34 @@ import java.util.*;
 @Component
 class GithubRepositoryMapper {
     
-    static List<GithubRepository> mapRepositoryReceivedDtoArrayToGithubRepositoryList(RepositoryReceivedDto[] array) {
+    static List<GithubRepository> mapRepositoryReceivedDtoArrayToNotForkedGithubRepositoryList(RepositoryReceivedDto[] array) {
+        List<GithubRepository> repositories = mapRepositoryReceivedDtoArrayToGithubRepositoryList(array);
+        return repositories.stream()
+                           .filter(repo -> !repo.getFork())
+                           .toList();
+    }
+    
+    static List<RepositoryResponseDto> mapGithubRepositoryListToRepositoryResponseDtoList(List<GithubRepository> repositories) {
+        return repositories.stream()
+                           .map(GithubRepositoryMapper::mapGithubRepositoryToRepositoryResponseDto)
+                           .toList();
+    }
+    
+    private static List<GithubRepository> mapRepositoryReceivedDtoArrayToGithubRepositoryList(RepositoryReceivedDto[] array) {
         return Arrays.stream(array)
                      .map(GithubRepositoryMapper::mapRepositoryReceivedDtoToGithubRepository)
                      .toList();
     }
     
-    static List<RepositoryResponseDto> mapGithubRepositoryListToRepositoryResponseDtoList(List<GithubRepository> list) {
-        return list.stream()
-                   .map(GithubRepositoryMapper::mapGithubRepositoryToRepositoryResponseDto)
-                   .toList();
-    }
-    
     private static RepositoryResponseDto mapGithubRepositoryToRepositoryResponseDto(GithubRepository repository) {
-        return new RepositoryResponseDto(repository.name(),
-                                         OwnerMapper.mapOwnerToOwnerName(repository.owner()),
+        return new RepositoryResponseDto(repository.getName(),
+                                         GithubOwnerMapper.mapOwnerToOwnerName(repository.getOwner()),
                                          Collections.emptyList());
     }
     
     private static GithubRepository mapRepositoryReceivedDtoToGithubRepository(RepositoryReceivedDto dto) {
         return new GithubRepository(dto.name(),
-                                    OwnerMapper.mapOwnerReceivedDtoToOwner(dto.owner()),
+                                    GithubOwnerMapper.mapOwnerReceivedDtoToOwner(dto.owner()),
                                     dto.fork());
     }
 }

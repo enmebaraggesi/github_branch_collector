@@ -1,7 +1,9 @@
 package com.github_branch_collector.config;
 
-import com.github_branch_collector.controller.GithubRepositoryController;
-import com.github_branch_collector.response.RepositoryResponseDto;
+import com.github_branch_collector.domain.GithubOwner;
+import com.github_branch_collector.domain.GithubRepository;
+import com.github_branch_collector.response.BranchResponseDto;
+import com.github_branch_collector.service.GithubRepositoryService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,13 +17,16 @@ import java.util.List;
 public class RunnerConfig {
     
     @Autowired
-    GithubRepositoryController controller;
+    GithubRepositoryService service;
     
     @Bean
     CommandLineRunner run() {
         return args -> {
-            List<RepositoryResponseDto> repos = controller.getAllNotForkedReposForUser("kalqa");
-            log.info(repos.toString());
+            GithubRepository repository = new GithubRepository("remigiusz-slabczynski-tic-tac-toe",
+                                                               new GithubOwner("enmebaraggesi"),
+                                                               false);
+            List<BranchResponseDto> branches = service.getAllBranchesForRepository(repository);
+            log.info(branches.toString());
         };
     }
 }

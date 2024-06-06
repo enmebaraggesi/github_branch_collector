@@ -1,7 +1,13 @@
 package com.github_branch_collector.domain;
 
-public record GithubRepository(String name,
-                               Owner owner,
-                               Boolean fork) {
+import lombok.*;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class GithubRepository {
     
+    private final String name;
+    private final GithubOwner owner;
+    private final Boolean fork;
 }

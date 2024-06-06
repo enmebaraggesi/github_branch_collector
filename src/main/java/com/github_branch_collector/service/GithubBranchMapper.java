@@ -5,14 +5,32 @@ import com.github_branch_collector.received.BranchReceivedDto;
 import com.github_branch_collector.response.BranchResponseDto;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 class GithubBranchMapper {
     
-    static GithubBranch mapBranchReceivedDtoToGithubBranch(BranchReceivedDto receivedDto) {
-        return null;
+    static List<BranchResponseDto> mapBranchReceivedDtoArrayToBranchResponseDtoList(BranchReceivedDto[] array) {
+        List<GithubBranch> githubBranches = mapBranchReceivedDtoArrayToGithubBranchList(array);
+        return githubBranches.stream()
+                             .map(GithubBranchMapper::mapGithubBranchToBranchResponseDto)
+                             .toList();
     }
     
-    static BranchResponseDto mapGithubBranchToBranchResponseDto(GithubBranch githubBranch) {
-        return null;
+    private static List<GithubBranch> mapBranchReceivedDtoArrayToGithubBranchList(BranchReceivedDto[] array) {
+        return Arrays.stream(array)
+                     .map(GithubBranchMapper::mapBranchReceivedDtoToGithubBranch)
+                     .toList();
+    }
+    
+    private static GithubBranch mapBranchReceivedDtoToGithubBranch(BranchReceivedDto dto) {
+        return new GithubBranch(dto.name(),
+                                GithubCommitMapper.mapCommitReceivedDtoToGithubCommit(dto.commit()));
+    }
+    
+    private static BranchResponseDto mapGithubBranchToBranchResponseDto(GithubBranch branch) {
+        return new BranchResponseDto(branch.getName(),
+                                     GithubCommitMapper.mapGithubCommitToSha(branch.getCommit()));
     }
 }

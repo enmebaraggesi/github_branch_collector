@@ -21,5 +21,4 @@ public class GithubRepositoryController {
     public List<RepositoryResponseDto> getAllNotForkedReposForUser(@PathVariable String username) {
         return githubRepositoryService.getAllNotForkedReposForUser(username);
     }
-    
 }
